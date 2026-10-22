@@ -1,0 +1,1 @@
+{'M01': {'name': 'Alex', 'plan': 'Gold', 'months_left': 6, 'fee': 600.0}, 'M03': {'name': 'Chris', 'plan': 'Platinum', 'months_left': 12, 'fee': 1000.0}, 'M04': {'name': 'Diana', 'plan': 'Gold', 'months_left': 3, 'fee': 150.0}}
