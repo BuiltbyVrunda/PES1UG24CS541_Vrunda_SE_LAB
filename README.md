@@ -42,13 +42,21 @@ SELABS/
 │   ├── PES1UG24CS541_SE_Lab-2.pdf              Jira screenshots + reflection answers
 │   └── PES1UG24CS541_SE_Lab-2.docx
 │
-└── Lab3/                                       Lab 3: Component Modelling & Architectural Pattern Selection
+├── Lab3/                                       Lab 3: Component Modelling & Architectural Pattern Selection
+│   ├── README.md
+│   ├── component-diagram.drawio                Editable UML component diagram
+│   ├── component-diagram.png
+│   ├── component-diagram.pdf
+│   ├── Architecture_Justification.docx         One-page architecture justification
+│   └── Architecture_Justification.pdf
+│
+└── lab7/                                       Lab 7: Fuzzing for Input Validation Bugs (Daycare Fees)
     ├── README.md
-    ├── component-diagram.drawio                Editable UML component diagram
-    ├── component-diagram.png
-    ├── component-diagram.pdf
-    ├── Architecture_Justification.docx         One-page architecture justification
-    └── Architecture_Justification.pdf
+    ├── SE_LAB_7_PES1UG24CS541.pdf              Report with screenshots for Steps 1-6
+    ├── daycare_fees.py                         Fixed application script
+    ├── test_daycare_fees.py                    Hypothesis fuzz tests (66 cases)
+    ├── original/daycare_fees_original.py       Original buggy script (for reproducing the failures)
+    └── screenshots/                            Individual screenshot images
 ```
 
 ---
@@ -145,6 +153,29 @@ The PDF contains the backlog, epics, story points, active sprint boards, both bu
 
 ---
 
+## Lab 7: Fuzzing for Input Validation Bugs
+
+**Problem:** L6_L7_48 Daycare Fees | **Tools:** Python, Hypothesis, pytest | **Folder:** [`lab7/`](lab7/)
+
+Property-based fuzzing with Hypothesis was run against `daycare_fees.py`, which has three functions: `parse_enrolment`, `hours_average` and `payable_fee`.
+
+| | Original code | Fixed code |
+|---|---|---|
+| Tests passing | 5 / 66 | **66 / 66** |
+
+### Bugs Found
+
+- **Crashes:** `None` and other non-string input, missing or extra `:` / `|` separators, empty CSV elements (`1,,3`), non-numeric text and decimals in the hours list.
+- **Silent wrong answers:** `nan` / `inf` accepted as numbers, negative hours accepted, `hours_average("1,2")` returned `1` because of floor division, and a **negative discount increased the bill** (`3000|-9999` gave 13539.0).
+
+### Fix
+
+All three functions are now total: they never raise and return `None` for invalid input, and `main()` prints a clear message. Numbers must be plain ASCII decimals, finite and in range (hours 0-168, fee at most 10,000,000), and averages use true division.
+
+The full write-up with screenshots for Steps 1-6 is in [`lab7/SE_LAB_7_PES1UG24CS541.pdf`](lab7/SE_LAB_7_PES1UG24CS541.pdf), and [`lab7/README.md`](lab7/README.md) has the bug table and run instructions.
+
+---
+
 ## Viewing the Diagrams
 
 The `.drawio` files can be opened in any of these:
@@ -164,4 +195,5 @@ The Lab 3 diagram is also provided as ready-to-view PNG and PDF files.
 | Requirements & specifications | Markdown, Microsoft Word |
 | UML diagrams | draw.io (diagrams.net) |
 | Agile backlog & sprints | Jira Software (Scrum) |
+| Fuzz testing | Python, Hypothesis, pytest |
 | Version control | Git & GitHub |
